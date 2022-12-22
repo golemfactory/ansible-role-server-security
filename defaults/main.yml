@@ -1,0 +1,2 @@
+server_security_enable_strict_unattended_upgrades: yes
+server_security_firewall_enable: yes

@@ -1,0 +1,27 @@
+- name: Configure strict unattended upgrades
+  when: server_security_enable_strict_unattended_upgrades
+  become: yes
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - regexp: '"\$\{distro_id\}:\$\{distro_codename\}-updates";'
+      line: "\t\"${distro_id}:${distro_codename}-updates\";"
+    - regexp: '^(//|)Unattended-Upgrade::Automatic-Reboot "'
+      line: 'Unattended-Upgrade::Automatic-Reboot "true";'
+    - regexp: '^(//|)Unattended-Upgrade::Automatic-Reboot-WithUsers "'
+      line: 'Unattended-Upgrade::Automatic-Reboot-WithUsers "false";'
+
+- name: ufw
+  when: server_security_firewall_enable
+  become: yes
+  block:
+    - name: ufw allow ssh
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: ufw block everything else
+      ufw:
+        state: enabled
