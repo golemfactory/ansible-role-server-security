@@ -14,7 +14,7 @@
       line: 'Unattended-Upgrade::Automatic-Reboot-WithUsers "false";'
 
 - name: ufw
-  when: server_security_firewall_enable
+  when: server_security_enable_firewall
   become: yes
   block:
     - name: ufw allow ssh
